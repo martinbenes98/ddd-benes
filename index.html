@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ASANEX — Dezinfekce, dezinsekce, deratizace | Kolín</title>
+  <meta name="description" content="ASANEX — profesionální DDD služby v Kolíně a okolí. Dezinfekce, dezinsekce, deratizace a fumigace komodit. Certifikovaní odborníci, zákon č. 258/2000 Sb."/>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green-dark: #0f2318;
+      --green: #1a4a2e;
+      --green-mid: #2d6e47;
+      --green-light: #3d9e60;
+      --accent: #c8f542;
+      --accent2: #f5a623;
+      --white: #f0ede6;
+      --muted: #8a9e90;
+      --surface: #142a1c;
+      --border: rgba(255,255,255,0.08);
+      --font-display: 'Bebas Neue', sans-serif;
+      --font-body: 'Outfit', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--green-dark);
+      color: var(--white);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ─── NOISE OVERLAY ─── */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 9999;
+    }
+
+    /* ─── SCROLLBAR ─── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--green-dark); }
+    ::-webkit-scrollbar-thumb { background: var(--green-light); border-radius: 2px; }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.2rem 5vw;
+      background: rgba(15,35,24,0.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      transition: padding 0.3s;
+    }
+    .nav-logo {
+      display: flex; align-items: baseline; gap: 0.4rem;
+      text-decoration: none;
+    }
+    .nav-logo-main {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .nav-logo-sub {
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.8rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+    .nav-cta {
+      background: var(--accent);
+      color: var(--green-dark) !important;
+      padding: 0.5rem 1.2rem !important;
+      font-weight: 600 !important;
+      letter-spacing: 0.05em !important;
+      transition: background 0.2s, transform 0.2s !important;
+    }
+    .nav-cta:hover { background: var(--accent2) !important; transform: translateY(-1px); }
+
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: var(--white); border-radius: 2px; transition: 0.3s; }
+
+    /* ─── HERO ─── */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: 7rem 5vw 4rem;
+      gap: 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Animated hexagon background */
+    .hero-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 80% at 70% 50%, rgba(45,110,71,0.3) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 60% at 20% 20%, rgba(26,74,46,0.4) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .hero-hex {
+      position: absolute;
+      right: -5%;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 55%;
+      aspect-ratio: 1;
+      opacity: 0.07;
+      pointer-events: none;
+    }
+
+    .hero-content { position: relative; z-index: 2; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: rgba(200,245,66,0.1);
+      border: 1px solid rgba(200,245,66,0.3);
+      color: var(--accent);
+      padding: 0.4rem 1rem;
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.2s forwards;
+    }
+    .hero-badge::before { content: '●'; font-size: 0.5rem; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(4rem, 7vw, 6.5rem);
+      line-height: 0.92;
+      letter-spacing: 0.02em;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.35s forwards;
+    }
+    .hero-title .accent { color: var(--accent); }
+    .hero-title .block { display: block; }
+
+    .hero-desc {
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.8;
+      max-width: 440px;
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.5s forwards;
+    }
+
+    .hero-actions {
+      display: flex; gap: 1rem; flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.65s forwards;
+    }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: var(--accent);
+      color: var(--green-dark);
+      padding: 0.9rem 2rem;
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+      clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+    }
+    .btn-primary:hover {
+      background: var(--accent2);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(200,245,66,0.2);
+    }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      border: 1px solid rgba(255,255,255,0.2);
+      color: var(--white);
+      padding: 0.9rem 2rem;
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .btn-secondary:hover { border-color: var(--accent); background: rgba(200,245,66,0.05); }
+
+    /* Hero right panel */
+    .hero-panel {
+      position: relative; z-index: 2;
+      opacity: 0;
+      animation: fadeIn 1s ease 0.6s forwards;
+    }
+    .hero-panel-inner {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 2.5rem;
+      position: relative;
+    }
+    .hero-panel-inner::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--green-light), transparent);
+    }
+    .panel-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+    }
+    .service-list { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; }
+    .service-list li {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.9rem 1.1rem;
+      border: 1px solid var(--border);
+      font-size: 0.9rem;
+      cursor: default;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .service-list li:hover { border-color: var(--accent); background: rgba(200,245,66,0.04); }
+    .service-list .icon {
+      width: 32px; height: 32px;
+      background: rgba(200,245,66,0.1);
+      border: 1px solid rgba(200,245,66,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; flex-shrink: 0;
+    }
+    .service-list .sname { font-weight: 500; }
+    .service-list .sdesc { font-size: 0.72rem; color: var(--muted); margin-top: 0.1rem; }
+
+    .panel-stats {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1px; margin-top: 1.5rem;
+      border: 1px solid var(--border);
+    }
+    .stat-box {
+      padding: 1.25rem 1rem;
+      border-right: 1px solid var(--border);
+      background: rgba(255,255,255,0.02);
+    }
+    .stat-box:last-child { border-right: none; }
+    .stat-num {
+      font-family: var(--font-display);
+      font-size: 2.2rem;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .stat-label { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.08em; margin-top: 0.25rem; }
+
+    /* ─── LAW BANNER ─── */
+    .law-banner {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 1.25rem 5vw;
+      display: flex; align-items: center; gap: 1.5rem;
+      overflow: hidden;
+    }
+    .law-tag {
+      background: var(--accent);
+      color: var(--green-dark);
+      padding: 0.3rem 0.8rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .law-text { font-size: 0.82rem; color: var(--muted); line-height: 1.5; }
+    .law-text strong { color: var(--white); }
+
+    /* ─── SECTION COMMON ─── */
+    section { padding: 6rem 5vw; }
+    .section-header { margin-bottom: 4rem; }
+    .section-eyebrow {
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 4vw, 4rem);
+      letter-spacing: 0.03em;
+      line-height: 1;
+      max-width: 600px;
+    }
+    .section-title .line { display: block; }
+    .section-desc { color: var(--muted); margin-top: 1rem; max-width: 500px; font-size: 0.95rem; }
+
+    /* ─── SERVICES ─── */
+    #sluzby { background: var(--green-dark); }
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+    .service-card {
+      background: var(--green-dark);
+      padding: 2.5rem 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.3s;
+    }
+    .service-card:hover { background: var(--surface); }
+    .service-card.featured { grid-column: span 2; }
+    .service-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 0; height: 3px;
+      background: var(--accent);
+      transition: width 0.4s ease;
+    }
+    .service-card:hover::after { width: 100%; }
+    .card-number {
+      font-family: var(--font-display);
+      font-size: 4rem;
+      color: rgba(200,245,66,0.1);
+      line-height: 1;
+      margin-bottom: 1rem;
+    }
+    .card-icon {
+      font-size: 2rem; margin-bottom: 1rem;
+    }
+    .card-title {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      letter-spacing: 0.03em;
+      margin-bottom: 0.75rem;
+      color: var(--white);
+    }
+    .card-desc { color: var(--muted); font-size: 0.9rem; line-height: 1.7; }
+    .card-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.25rem; }
+    .tag {
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border: 1px solid var(--border);
+      padding: 0.25rem 0.6rem;
+      color: var(--muted);
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .service-card:hover .tag { border-color: rgba(200,245,66,0.3); color: var(--accent); }
+
+    /* ─── FUMIGACE SPECIAL ─── */
+    #fumigace {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .fumigace-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: start;
+    }
+    .fumigace-visual {
+      position: sticky; top: 7rem;
+    }
+    .fumi-diagram {
+      background: var(--green-dark);
+      border: 1px solid var(--border);
+      padding: 2.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .fumi-diagram::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--accent2), var(--accent));
+    }
+    .fumi-title-small {
+      font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent2); margin-bottom: 2rem;
+    }
+    .fumi-steps { display: flex; flex-direction: column; gap: 0; }
+    .fumi-step {
+      display: flex; gap: 1.25rem; padding: 1rem 0;
+      border-bottom: 1px solid var(--border);
+      align-items: flex-start;
+    }
+    .fumi-step:last-child { border-bottom: none; }
+    .fumi-step-num {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      color: var(--accent2);
+      line-height: 1;
+      min-width: 2rem;
+    }
+    .fumi-step-text strong { display: block; font-size: 0.9rem; margin-bottom: 0.2rem; }
+    .fumi-step-text span { font-size: 0.8rem; color: var(--muted); }
+
+    .fumi-warning {
+      background: rgba(245,166,35,0.08);
+      border: 1px solid rgba(245,166,35,0.3);
+      padding: 1rem 1.25rem;
+      margin-top: 1.5rem;
+      display: flex; gap: 0.75rem; align-items: flex-start;
+      font-size: 0.8rem; line-height: 1.6; color: var(--muted);
+    }
+    .fumi-warning strong { color: var(--accent2); display: block; margin-bottom: 0.25rem; }
+
+    .fumi-content .section-header { margin-bottom: 2rem; }
+    .fumi-points { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 2rem; }
+    .fumi-point {
+      display: flex; gap: 1rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .fumi-point:last-child { border-bottom: none; }
+    .fumi-point-icon {
+      width: 44px; height: 44px; flex-shrink: 0;
+      background: rgba(200,245,66,0.08);
+      border: 1px solid rgba(200,245,66,0.15);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+    }
+    .fumi-point strong { display: block; font-size: 0.95rem; margin-bottom: 0.3rem; }
+    .fumi-point span { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+
+    /* ─── ABOUT / WHY ─── */
+    #proc { background: var(--green-dark); }
+    .why-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+    .why-card {
+      border: 1px solid var(--border);
+      padding: 2rem 1.75rem;
+      position: relative;
+      transition: border-color 0.3s, background 0.3s;
+    }
+    .why-card:hover { border-color: rgba(200,245,66,0.4); background: var(--surface); }
+    .why-num {
+      font-family: var(--font-display);
+      font-size: 3rem;
+      color: var(--accent);
+      opacity: 0.3;
+      line-height: 1;
+      margin-bottom: 1rem;
+    }
+    .why-title { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; }
+    .why-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.7; }
+
+    /* ─── OBLASTI PŮSOBI ─── */
+    #oblast {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+    }
+    .oblasti-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+    .map-placeholder {
+      background: var(--green-dark);
+      border: 1px solid var(--border);
+      padding: 3rem 2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .map-circle {
+      width: 200px; height: 200px;
+      border-radius: 50%;
+      border: 2px solid var(--green-mid);
+      margin: 0 auto 1rem;
+      position: relative;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .map-circle::after {
+      content: '';
+      position: absolute;
+      width: 120%;height: 120%;
+      border-radius: 50%;
+      border: 1px dashed rgba(200,245,66,0.2);
+    }
+    .map-dot {
+      width: 16px; height: 16px;
+      background: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 0 6px rgba(200,245,66,0.15), 0 0 20px rgba(200,245,66,0.3);
+      animation: mapPulse 2s infinite;
+    }
+    @keyframes mapPulse {
+      0%, 100% { box-shadow: 0 0 0 6px rgba(200,245,66,0.15), 0 0 20px rgba(200,245,66,0.3); }
+      50% { box-shadow: 0 0 0 12px rgba(200,245,66,0.08), 0 0 30px rgba(200,245,66,0.15); }
+    }
+    .map-label { font-family: var(--font-display); font-size: 1.5rem; color: var(--white); }
+    .map-sub { font-size: 0.75rem; color: var(--muted); letter-spacing: 0.1em; margin-top: 0.25rem; }
+
+    .oblasti-list { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 2rem; }
+    .oblast-item {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0.85rem 1.1rem;
+      border: 1px solid var(--border);
+      font-size: 0.9rem;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .oblast-item:hover { border-color: rgba(200,245,66,0.3); background: rgba(200,245,66,0.03); }
+    .oblast-item span { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.1em; }
+
+    /* ─── CONTACT ─── */
+    #kontakt { background: var(--green-dark); }
+    .contact-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: start;
+    }
+    .contact-info { display: flex; flex-direction: column; gap: 1.25rem; margin-top: 2rem; }
+    .contact-item {
+      display: flex; gap: 1rem; align-items: flex-start;
+      padding: 1.25rem;
+      border: 1px solid var(--border);
+      transition: border-color 0.2s, background 0.2s;
+      text-decoration: none; color: inherit;
+    }
+    .contact-item:hover { border-color: rgba(200,245,66,0.3); background: var(--surface); }
+    .contact-item-icon {
+      width: 40px; height: 40px; flex-shrink: 0;
+      background: rgba(200,245,66,0.08);
+      border: 1px solid rgba(200,245,66,0.15);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+    }
+    .contact-item strong { display: block; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.2rem; }
+    .contact-item span { font-size: 1rem; color: var(--white); }
+
+    .contact-form { background: var(--surface); border: 1px solid var(--border); padding: 2.5rem; }
+    .form-title {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      letter-spacing: 0.03em;
+      margin-bottom: 1.75rem;
+    }
+    .form-group { margin-bottom: 1.25rem; }
+    .form-group label { display: block; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem; }
+    .form-group input, .form-group textarea, .form-group select {
+      width: 100%;
+      background: var(--green-dark);
+      border: 1px solid var(--border);
+      color: var(--white);
+      padding: 0.85rem 1rem;
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s;
+      appearance: none;
+    }
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: var(--accent); }
+    .form-group textarea { resize: vertical; min-height: 100px; }
+    .form-group select option { background: var(--green-dark); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-submit {
+      width: 100%;
+      background: var(--accent);
+      color: var(--green-dark);
+      border: none;
+      padding: 1rem;
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+      clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+    }
+    .form-submit:hover { background: var(--accent2); transform: translateY(-1px); }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 3rem 5vw 2rem;
+    }
+    .footer-inner {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 4rem;
+      padding-bottom: 2rem;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .footer-brand-name {
+      font-family: var(--font-display);
+      font-size: 2.5rem;
+      color: var(--accent);
+      letter-spacing: 0.05em;
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+    .footer-brand-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.7; margin-top: 0.75rem; max-width: 320px; }
+    .footer-col-title { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.25rem; }
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+    .footer-links a { color: var(--muted); text-decoration: none; font-size: 0.88rem; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--white); }
+    .footer-bottom {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 0.75rem; color: var(--muted);
+    }
+    .footer-law { display: flex; gap: 0.5rem; align-items: center; }
+    .footer-law::before { content: '⚖'; font-size: 0.7rem; }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .reveal {
+      opacity: 0; transform: translateY(28px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+
+    /* ─── MOBILE NAV ─── */
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; gap: 2.5rem; padding-top: 6rem; }
+      .hero-panel { order: -1; }
+      .services-grid { grid-template-columns: 1fr; }
+      .service-card.featured { grid-column: span 1; }
+      .fumigace-inner { grid-template-columns: 1fr; gap: 3rem; }
+      .fumigace-visual { position: static; }
+      .why-grid { grid-template-columns: 1fr 1fr; }
+      .oblasti-inner { grid-template-columns: 1fr; gap: 3rem; }
+      .contact-wrapper { grid-template-columns: 1fr; gap: 3rem; }
+      .footer-inner { grid-template-columns: 1fr; gap: 2rem; }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+    }
+    @media (max-width: 600px) {
+      .why-grid { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      .footer-bottom { flex-direction: column; gap: 0.5rem; text-align: center; }
+    }
+
+    /* Mobile menu open */
+    .mobile-menu {
+      display: none;
+      position: fixed; top: 64px; left: 0; right: 0;
+      background: rgba(15,35,24,0.98);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 1.5rem 5vw;
+      flex-direction: column; gap: 1.25rem;
+      z-index: 99;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      color: var(--white); text-decoration: none;
+      font-size: 1rem; letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1rem;
+    }
+    .mobile-menu a:last-child { border-bottom: none; }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav id="mainNav">
+    <a href="#" class="nav-logo">
+      <span class="nav-logo-main">ASANEX</span>
+      <span class="nav-logo-sub">Kolín</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#sluzby">Služby</a></li>
+      <li><a href="#fumigace">Fumigace</a></li>
+      <li><a href="#proc">O nás</a></li>
+      <li><a href="#oblast">Oblast</a></li>
+      <li><a href="#kontakt" class="nav-cta">Poptávka</a></li>
+    </ul>
+    <div class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#sluzby" onclick="closeMobile()">Služby</a>
+    <a href="#fumigace" onclick="closeMobile()">Fumigace komodit</a>
+    <a href="#proc" onclick="closeMobile()">O nás</a>
+    <a href="#oblast" onclick="closeMobile()">Oblast působení</a>
+    <a href="#kontakt" onclick="closeMobile()">Kontakt & poptávka</a>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero" style="padding: 7rem 5vw 5rem;">
+    <div class="hero-bg"></div>
+    <svg class="hero-hex" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="50,2 93,26 93,74 50,98 7,74 7,26" fill="none" stroke="#3d9e60" stroke-width="0.5"/>
+      <polygon points="50,10 87,30 87,70 50,90 13,70 13,30" fill="none" stroke="#3d9e60" stroke-width="0.3"/>
+      <polygon points="50,18 81,34 81,66 50,82 19,66 19,34" fill="none" stroke="#c8f542" stroke-width="0.3"/>
+    </svg>
+
+    <div class="hero-content">
+      <div class="hero-badge">Certifikovaná firma · Zákon 258/2000 Sb.</div>
+      <h1 class="hero-title">
+        <span class="block">OCHRANA</span>
+        <span class="block">ZDRAVÍ<br/>A <span class="accent">KOMODIT</span></span>
+      </h1>
+      <p class="hero-desc">Profesionální DDD služby a fumigace skladových komodit — pro domácnosti, firmy i zemědělské provozy v Kolíně a okolí. Pracujeme v souladu se zákonem č. 258/2000 Sb. o ochraně veřejného zdraví.</p>
+      <div class="hero-actions">
+        <a href="#kontakt" class="btn-primary">Nezávazná poptávka →</a>
+        <a href="#sluzby" class="btn-secondary">Naše služby ↓</a>
+      </div>
+    </div>
+
+    <div class="hero-panel">
+      <div class="hero-panel-inner">
+        <div class="panel-label">— Co nabízíme</div>
+        <ul class="service-list">
+          <li>
+            <div class="icon">🦠</div>
+            <div>
+              <div class="sname">Dezinfekce</div>
+              <div class="sdesc">Eliminace bakterií, virů, plísní a dalších patogenů</div>
+            </div>
+          </li>
+          <li>
+            <div class="icon">🪲</div>
+            <div>
+              <div class="sname">Dezinsekce</div>
+              <div class="sdesc">Hubení škodlivého hmyzu — štěnice, švábi, mravenci, vosy</div>
+            </div>
+          </li>
+          <li>
+            <div class="icon">🐀</div>
+            <div>
+              <div class="sname">Deratizace</div>
+              <div class="sdesc">Likvidace a prevence výskytu hlodavců</div>
+            </div>
+          </li>
+          <li>
+            <div class="icon">💨</div>
+            <div>
+              <div class="sname">Fumigace komodit</div>
+              <div class="sdesc">Plynování obilovin, luštěnin a dalších surovin</div>
+            </div>
+          </li>
+        </ul>
+        <div class="panel-stats">
+          <div class="stat-box">
+            <div class="stat-num">15+</div>
+            <div class="stat-label">Let zkušeností</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num">24/7</div>
+            <div class="stat-label">Pohotovost</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LAW BANNER -->
+  <div class="law-banner">
+    <div class="law-tag">⚖ Zákon</div>
+    <p class="law-text">
+      Provádíme veškeré služby v souladu se <strong>zákonem č. 258/2000 Sb. o ochraně veřejného zdraví</strong>, § 55–61 (speciální ochranná DDD). Naši pracovníci jsou držiteli příslušných <strong>osvědčení o odborné způsobilosti</strong> a splňují podmínky stanovené příslušnou krajskou hygienickou stanicí.
+    </p>
+  </div>
+
+  <!-- SERVICES -->
+  <section id="sluzby">
+    <div class="section-header reveal">
+      <div class="section-eyebrow">— 01 / Služby</div>
+      <h2 class="section-title">
+        <span class="line">KOMPLETNÍ DDD</span>
+        <span class="line">OCHRANA</span>
+      </h2>
+      <p class="section-desc">Řešíme problémy od jednorázového zásahu po dlouhodobé preventivní smlouvy pro firmy, potravinářské provozy i domácnosti.</p>
+    </div>
+
+    <div class="services-grid reveal">
+      <div class="service-card featured">
+        <div class="card-number">01</div>
+        <div class="card-icon">🦠</div>
+        <div class="card-title">DEZINFEKCE</div>
+        <p class="card-desc">Záměrné ničení choroboplodných zárodků — bakterií, virů, hub a plísní — pomocí chemických, fyzikálních nebo kombinovaných metod. Provádíme dezinfekci bytů, provozoven, potravinářských objektů, nemocničních prostor i vozidel. Používáme přípravky schválené Hlavním hygienikem ČR.</p>
+        <div class="card-tags">
+          <span class="tag">Aerosol / fogging</span>
+          <span class="tag">Postřik</span>
+          <span class="tag">HACCP</span>
+          <span class="tag">Potravinářské provozy</span>
+          <span class="tag">COVID a jiné viry</span>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <div class="card-number">02</div>
+        <div class="card-icon">🪲</div>
+        <div class="card-title">DEZINSEKCE</div>
+        <p class="card-desc">Hubení škodlivého a obtížného hmyzu všemi dostupnými metodami. Specializujeme se zejména na obtížně řešitelné případy jako jsou štěnice, švábi, mravenci farao nebo ploštice.</p>
+        <div class="card-tags">
+          <span class="tag">Štěnice</span>
+          <span class="tag">Švábi</span>
+          <span class="tag">Mravenci</span>
+          <span class="tag">Vosy / sršni</span>
+          <span class="tag">Komáři</span>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <div class="card-number">03</div>
+        <div class="card-icon">🐀</div>
+        <div class="card-title">DERATIZACE</div>
+        <p class="card-desc">Potlačení a likvidace hlodavců — potkanů, myší a dalších živočichů. Monitoring, nástrahy v bezpečných boxech, profesionální dokumentace zásahu.</p>
+        <div class="card-tags">
+          <span class="tag">Monitoring</span>
+          <span class="tag">Bezpečné boxy</span>
+          <span class="tag">Preventivní smlouvy</span>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <div class="card-number">04</div>
+        <div class="card-icon">🕊</div>
+        <div class="card-title">SÍŤOVÁNÍ & HOLUBI</div>
+        <p class="card-desc">Instalace ochranných sítí a repelentních systémů proti holubům a dalšímu ptactvu. Dezinfekce po holubím trusu.</p>
+        <div class="card-tags">
+          <span class="tag">Sítě</span>
+          <span class="tag">Hroty</span>
+          <span class="tag">Dezinfekce po trusu</span>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <div class="card-number">05</div>
+        <div class="card-icon">🌿</div>
+        <div class="card-title">ASANACE POROSTŮ</div>
+        <p class="card-desc">Likvidace nežádoucích porostů a plevelů ekologicky šetrnými přípravky v souladu s platnou legislativou.</p>
+        <div class="card-tags">
+          <span class="tag">Plevele</span>
+          <span class="tag">Ekologické přípravky</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FUMIGACE -->
+  <section id="fumigace">
+    <div class="fumigace-inner">
+      <div class="fumigace-visual reveal">
+        <div class="fumi-diagram">
+          <div class="fumi-title-small">— Průběh fumigace komodit</div>
+          <div class="fumi-steps">
+            <div class="fumi-step">
+              <div class="fumi-step-num">1</div>
+              <div class="fumi-step-text">
+                <strong>Prohlídka a posouzení</strong>
+                <span>Inspekce objektu / komodity, určení vhodnosti pro plynování</span>
+              </div>
+            </div>
+            <div class="fumi-step">
+              <div class="fumi-step-num">2</div>
+              <div class="fumi-step-text">
+                <strong>Nahlášení na KHS</strong>
+                <span>Splnění oznamovací povinnosti na krajskou hygienickou stanici</span>
+              </div>
+            </div>
+            <div class="fumi-step">
+              <div class="fumi-step-num">3</div>
+              <div class="fumi-step-text">
+                <strong>Hermetizace objektu</strong>
+                <span>Utěsnění prostoru, zabezpečení zóny, zákaz vstupu</span>
+              </div>
+            </div>
+            <div class="fumi-step">
+              <div class="fumi-step-num">4</div>
+              <div class="fumi-step-text">
+                <strong>Aplikace fumigantu</strong>
+                <span>Fosforovodík (fosfid hlinitý) — standardní volba pro komodity</span>
+              </div>
+            </div>
+            <div class="fumi-step">
+              <div class="fumi-step-num">5</div>
+              <div class="fumi-step-text">
+                <strong>Expozice a monitoring</strong>
+                <span>3–5 dní expozice, průběžné měření koncentrací plynu</span>
+              </div>
+            </div>
+            <div class="fumi-step">
+              <div class="fumi-step-num">6</div>
+              <div class="fumi-step-text">
+                <strong>Odvětrání a protokol</strong>
+                <span>48 h větrání, vystavení dokladu o provedené fumigaci</span>
+              </div>
+            </div>
+          </div>
+          <div class="fumi-warning">
+            <span>⚠</span>
+            <div>
+              <strong>Zvláštní osvědčení</strong>
+              Fumigace je vázaná živnost — k jejímu provádění je nezbytné zvláštní oprávnění. ASANEX toto osvědčení vlastní a veškeré zásahy provádí v souladu s platnou legislativou.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="fumi-content reveal reveal-delay-2">
+        <div class="section-header">
+          <div class="section-eyebrow">— 02 / Speciální služba</div>
+          <h2 class="section-title">
+            <span class="line">FUMIGACE</span>
+            <span class="line">KOMODIT</span>
+          </h2>
+          <p class="section-desc">Plynování obilovin a dalších zemědělských produktů — jediná metoda, která dokáže vyhladit škůdce ve všech vývojových stádiích, včetně těch ukrytých uvnitř zrn.</p>
+        </div>
+
+        <div class="fumi-points">
+          <div class="fumi-point">
+            <div class="fumi-point-icon">🌾</div>
+            <div>
+              <strong>Obiloviny a luštěniny</strong>
+              <span>Pšenice, ječmen, kukuřice, rýže, hrách, čočka — v silech, halách i vagonech. Fumigace nesnižuje klíčivost zrn ani jakost komodity.</span>
+            </div>
+          </div>
+          <div class="fumi-point">
+            <div class="fumi-point-icon">🏭</div>
+            <div>
+              <strong>Mlýny, pekárny, výrobny</strong>
+              <span>Potravinářské provozy, výrobny krmných směsí a aditiv — preventivní i havarijní zásahy, minimálně 1× ročně dle HACCP.</span>
+            </div>
+          </div>
+          <div class="fumi-point">
+            <div class="fumi-point-icon">🪵</div>
+            <div>
+              <strong>Dřevo a historické objekty</strong>
+              <span>Ochrana dřevěných konstrukcí, dřevostaveb, starožitného nábytku, kostelů, depozitářů a muzejních sbírek.</span>
+            </div>
+          </div>
+          <div class="fumi-point">
+            <div class="fumi-point-icon">🚢</div>
+            <div>
+              <strong>Export a přeprava</strong>
+              <span>Fumigace zboží v přepravních kontejnerech, vystavení mezinárodního protokolu pro zemědělský export.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY US -->
+  <section id="proc">
+    <div class="section-header reveal">
+      <div class="section-eyebrow">— 03 / Proč ASANEX</div>
+      <h2 class="section-title">
+        <span class="line">KVALITA BEZ</span>
+        <span class="line">KOMPROMISŮ</span>
+      </h2>
+    </div>
+
+    <div class="why-grid">
+      <div class="why-card reveal">
+        <div class="why-num">01</div>
+        <div class="why-title">Certifikovaní odborníci</div>
+        <p class="why-desc">Všichni naši technici jsou držiteli osvědčení o odborné způsobilosti dle zákona č. 258/2000 Sb. a pravidelně se vzdělávají.</p>
+      </div>
+      <div class="why-card reveal reveal-delay-1">
+        <div class="why-num">02</div>
+        <div class="why-title">Moderní přípravky</div>
+        <p class="why-desc">Používáme výhradně přípravky schválené Hlavním hygienikem ČR a Státní rostlinolékařskou správou. Šetrné k životnímu prostředí.</p>
+      </div>
+      <div class="why-card reveal reveal-delay-2">
+        <div class="why-num">03</div>
+        <div class="why-title">Diskrétnost</div>
+        <p class="why-desc">Neoznačená vozidla, civilní oděvy a maximální diskrétnost. Váš soukromý nebo firemní problém zůstane jen mezi námi.</p>
+      </div>
+      <div class="why-card reveal">
+        <div class="why-num">04</div>
+        <div class="why-title">HACCP & normy</div>
+        <p class="why-desc">Naše služby jsou plně kompatibilní s požadavky systémů HACCP, IFS a BRC. Vydáváme veškerou dokumentaci pro audit.</p>
+      </div>
+      <div class="why-card reveal reveal-delay-1">
+        <div class="why-num">05</div>
+        <div class="why-title">Pohotovost 24/7</div>
+        <p class="why-desc">Havárií a napadení hmyzem se nepočítá. Jsme dosažitelní nepřetržitě a na havarijní zásahy reagujeme do hodin.</p>
+      </div>
+      <div class="why-card reveal reveal-delay-2">
+        <div class="why-num">06</div>
+        <div class="why-title">Místní znalost</div>
+        <p class="why-desc">Jsme z Kolína. Známe místní podmínky, stavební fond i zemědělský charakter Středočeského kraje. Jsme tu rychle a rádi.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- OBLAST -->
+  <section id="oblast">
+    <div class="oblasti-inner">
+      <div class="reveal">
+        <div class="section-header">
+          <div class="section-eyebrow">— 04 / Oblast působení</div>
+          <h2 class="section-title">
+            <span class="line">KOLÍN</span>
+            <span class="line">A OKOLÍ</span>
+          </h2>
+          <p class="section-desc">Primárně působíme v Kolíně a Středočeském kraji. Pro fumigaci komodit vyjíždíme po celé ČR — kontaktujte nás pro individuální nabídku.</p>
+        </div>
+        <div class="oblasti-list">
+          <div class="oblast-item">Kolín a Kolínsko <span>Primární oblast</span></div>
+          <div class="oblast-item">Kutná Hora a okolí <span>Pravidelné výjezdy</span></div>
+          <div class="oblast-item">Nymburk a Poděbrady <span>Pravidelné výjezdy</span></div>
+          <div class="oblast-item">Pardubice a okolí <span>Po domluvě</span></div>
+          <div class="oblast-item">Fumigace — celá ČR <span>Specializovaná služba</span></div>
+        </div>
+      </div>
+
+      <div class="reveal reveal-delay-2">
+        <div class="map-placeholder">
+          <div class="map-circle">
+            <div class="map-dot"></div>
+          </div>
+          <div class="map-label">KOLÍN</div>
+          <div class="map-sub">Středočeský kraj, CZ</div>
+          <p style="font-size:0.8rem; color:var(--muted); margin-top:1.5rem; line-height:1.6;">Přesné GPS souřadnice, otevírací dobu a trasu najdete na <strong style="color:var(--white);">Google Maps</strong> nebo nás kontaktujte přímo.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="kontakt">
+    <div class="section-header reveal">
+      <div class="section-eyebrow">— 05 / Kontakt</div>
+      <h2 class="section-title">
+        <span class="line">POPTEJTE</span>
+        <span class="line">ZDARMA</span>
+      </h2>
+      <p class="section-desc">Vyplňte formulář nebo nás kontaktujte přímo. Odpovíme do 2 hodin v pracovní době, v naléhavých případech okamžitě.</p>
+    </div>
+
+    <div class="contact-wrapper">
+      <div class="reveal">
+        <div class="contact-info">
+          <a href="tel:+420123456789" class="contact-item">
+            <div class="contact-item-icon">📞</div>
+            <div>
+              <strong>Telefon / Pohotovost</strong>
+              <span>+420 123 456 789</span>
+            </div>
+          </a>
+          <a href="mailto:info@asanex.cz" class="contact-item">
+            <div class="contact-item-icon">✉</div>
+            <div>
+              <strong>E-mail</strong>
+              <span>info@asanex.cz</span>
+            </div>
+          </a>
+          <div class="contact-item">
+            <div class="contact-item-icon">📍</div>
+            <div>
+              <strong>Adresa</strong>
+              <span>Kolín, Středočeský kraj</span>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-item-icon">🕐</div>
+            <div>
+              <strong>Pracovní doba</strong>
+              <span>Po–Pá 7:00–17:00 · Pohotovost 24/7</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-form reveal reveal-delay-2">
+        <div class="form-title">NEZÁVAZNÁ POPTÁVKA</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Jméno *</label>
+            <input type="text" placeholder="Jan Novák"/>
+          </div>
+          <div class="form-group">
+            <label>Telefon *</label>
+            <input type="tel" placeholder="+420 ..."/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>E-mail</label>
+          <input type="email" placeholder="email@domena.cz"/>
+        </div>
+        <div class="form-group">
+          <label>Typ služby *</label>
+          <select>
+            <option value="">— Vyberte službu —</option>
+            <option>Dezinfekce</option>
+            <option>Dezinsekce</option>
+            <option>Deratizace</option>
+            <option>Fumigace komodit</option>
+            <option>Síťování (holubi)</option>
+            <option>Preventivní smlouva</option>
+            <option>Nevím — potřebuji poradit</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Popis situace</label>
+          <textarea placeholder="Stručně popište problém, typ objektu nebo rozsah zakázky…"></textarea>
+        </div>
+        <button class="form-submit" onclick="handleSubmit(event)">Odeslat poptávku →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand-name">ASANEX</div>
+        <div style="font-size:0.7rem; letter-spacing:0.15em; color:var(--muted); text-transform:uppercase;">Dezinfekce · Dezinsekce · Deratizace · Fumigace</div>
+        <p class="footer-brand-desc">Certifikovaná firma pro DDD služby a fumigaci komodit v Kolíně a Středočeském kraji. Pracujeme v souladu se zákonem č. 258/2000 Sb. o ochraně veřejného zdraví.</p>
+      </div>
+      <div>
+        <div class="footer-col-title">Služby</div>
+        <ul class="footer-links">
+          <li><a href="#sluzby">Dezinfekce</a></li>
+          <li><a href="#sluzby">Dezinsekce</a></li>
+          <li><a href="#sluzby">Deratizace</a></li>
+          <li><a href="#fumigace">Fumigace komodit</a></li>
+          <li><a href="#sluzby">Síťování</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Kontakt</div>
+        <ul class="footer-links">
+          <li><a href="tel:+420123456789">+420 123 456 789</a></li>
+          <li><a href="mailto:info@asanex.cz">info@asanex.cz</a></li>
+          <li><a href="#oblast">Kolín a okolí</a></li>
+          <li><a href="#kontakt">Poptávkový formulář</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 ASANEX s.r.o. — Kolín</span>
+      <span class="footer-law">Provozujeme v souladu se zákonem č. 258/2000 Sb.</span>
+    </div>
+  </footer>
+
+  <script>
+    // Mobile menu
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    hamburger.addEventListener('click', () => mobileMenu.classList.toggle('open'));
+    function closeMobile() { mobileMenu.classList.remove('open'); }
+
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+      });
+    }, { threshold: 0.08 });
+    reveals.forEach(r => observer.observe(r));
+
+    // Nav shrink on scroll
+    const nav = document.getElementById('mainNav');
+    window.addEventListener('scroll', () => {
+      nav.style.padding = window.scrollY > 60 ? '0.8rem 5vw' : '1.2rem 5vw';
+    });
+
+    // Form submit handler
+    function handleSubmit(e) {
+      e.preventDefault();
+      const btn = e.target;
+      btn.textContent = '✓ Odesláno! Brzy se ozveme.';
+      btn.style.background = 'var(--green-light)';
+      btn.disabled = true;
+    }
+  </script>
+</body>
+</html>
